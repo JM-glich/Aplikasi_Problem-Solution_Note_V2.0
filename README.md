@@ -10,37 +10,13 @@ Aplikasi ini dikembangkan sebagai bagian dari **Mini Project 2** pada praktikum 
 
 ---
 
-## Fitur Aplikasi
-
-Aplikasi ini memiliki beberapa fitur utama, yaitu:
-
-* **Create Note**
-  Pengguna dapat menambahkan catatan baru yang berisi judul, kategori, deskripsi masalah, dan solusi.
-
-* **Read Note**
-  Menampilkan seluruh catatan yang tersimpan di database Supabase dalam bentuk daftar.
-
-* **Update Note**
-  Pengguna dapat mengedit catatan yang sudah dibuat sebelumnya.
-
-* **Delete Note**
-  Catatan dapat dihapus dari database.
-
-* **Light Mode & Dark Mode**
-  Aplikasi mendukung perubahan tema antara mode terang dan mode gelap.
-
-* **Database Integration (Supabase)**
-  Semua data disimpan dan dikelola melalui database Supabase.
-
----
-
 ## Widget yang Digunakan
 
 Berikut beberapa widget Flutter yang digunakan dalam pengembangan aplikasi ini:
 
 * `MaterialApp`
 * `Scaffold`
-* `AppBar`
+* `AppBar`    
 * `ListView`
 * `ListTile`
 * `Card`
@@ -71,6 +47,30 @@ Berikut beberapa widget Flutter yang digunakan dalam pengembangan aplikasi ini:
 ---
 
 ## Fitur Aplikasi
+
+Aplikasi ini memiliki beberapa fitur utama, yaitu:
+
+* **Read Note**
+  Menampilkan seluruh catatan yang tersimpan di database Supabase dalam bentuk daftar.
+
+* **Create Note**
+  Pengguna dapat menambahkan catatan baru yang berisi judul, kategori, deskripsi masalah, dan solusi.
+
+* **Update Note**
+  Pengguna dapat mengedit catatan yang sudah dibuat sebelumnya.
+
+* **Delete Note**
+  Catatan dapat dihapus dari database.
+
+* **Light Mode & Dark Mode**
+  Aplikasi mendukung perubahan tema antara mode terang dan mode gelap.
+
+* **Database Integration (Supabase)**
+  Semua data disimpan dan dikelola melalui database Supabase.
+
+---
+
+## Penjelasan Fitur Aplikasi
 
 Aplikasi **Problem & Solution Note** memiliki beberapa fitur utama yang memungkinkan pengguna untuk mengelola catatan masalah dan solusi secara dinamis menggunakan database Supabase.
 
