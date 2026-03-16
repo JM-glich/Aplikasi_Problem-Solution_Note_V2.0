@@ -42,7 +42,9 @@ Berikut beberapa widget Flutter yang digunakan dalam pengembangan aplikasi ini:
 ---
 ## Struktur Folder
 
-
+```dart
+l
+```
 
 ---
 
@@ -251,3 +253,99 @@ Future<void> deleteNote(String id) async {
 ```
 
 Setelah data berhasil dihapus, aplikasi akan memuat ulang daftar catatan sehingga perubahan langsung terlihat pada tampilan aplikasi.
+
+## Penjelasan Fitur Untuk Nilai Tambah
+
+Selain fitur utama CRUD dan integrasi database, aplikasi **Problem & Solution Note** juga dilengkapi dengan beberapa fitur tambahan untuk meningkatkan kualitas aplikasi, yaitu dukungan **Light Mode & Dark Mode** serta penggunaan **file `.env` untuk keamanan konfigurasi Supabase**.
+
+---
+
+### 1. Light Mode dan Dark Mode
+
+Aplikasi menyediakan fitur untuk mengubah tampilan antara **Light Mode** dan **Dark Mode**. Fitur ini bertujuan untuk meningkatkan kenyamanan pengguna saat menggunakan aplikasi dalam kondisi pencahayaan yang berbeda.
+
+Pengaturan tema dilakukan pada file `main.dart` dengan memanfaatkan properti `theme`, `darkTheme`, dan `themeMode` pada widget `MaterialApp`.
+
+Contoh implementasi:
+
+```dart
+MaterialApp(
+  debugShowCheckedModeBanner: false,
+  title: 'Problem & Solution Note',
+
+  themeMode: themeMode,
+
+  theme: ThemeData(
+    useMaterial3: true,
+    colorSchemeSeed: Colors.indigo,
+    brightness: Brightness.light,
+  ),
+
+  darkTheme: ThemeData(
+    useMaterial3: true,
+    colorSchemeSeed: Colors.indigo,
+    brightness: Brightness.dark,
+  ),
+)
+```
+
+Variabel `themeMode` digunakan untuk menentukan apakah aplikasi menggunakan **tema terang** atau **tema gelap**.
+
+Untuk mengganti tema secara dinamis, dibuat fungsi `toggleTheme()` yang akan mengubah nilai `ThemeMode`.
+
+```dart
+void toggleTheme() {
+  setState(() {
+    themeMode =
+        themeMode == ThemeMode.light
+        ? ThemeMode.dark
+        : ThemeMode.light;
+  });
+}
+```
+
+Fungsi ini kemudian dipanggil melalui tombol pada `AppBar` di halaman utama aplikasi.
+
+```dart
+IconButton(
+  icon: const Icon(Icons.dark_mode),
+  onPressed: widget.toggleTheme,
+)
+```
+
+Ketika tombol ditekan, aplikasi akan langsung berpindah antara **Light Mode** dan **Dark Mode** tanpa perlu me-restart aplikasi.
+
+---
+
+### 2. Penggunaan File `.env` untuk Konfigurasi Supabase
+
+Untuk meningkatkan keamanan aplikasi, konfigurasi **Supabase URL** dan **API Key** tidak dituliskan langsung di dalam kode sumber, melainkan disimpan di dalam file `.env`.
+
+Pendekatan ini bertujuan untuk:
+
+* Menghindari penyebaran API Key di dalam repository publik
+* Memisahkan konfigurasi dari kode program
+* Memudahkan pengelolaan environment aplikasi
+
+Contoh isi file `.env`:
+
+```env
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-anon-public-key
+```
+
+Nilai tersebut kemudian dibaca oleh aplikasi saat proses inisialisasi Supabase.
+
+Contoh penggunaan pada kode:
+
+```dart
+await Supabase.initialize(
+  url: dotenv.env['SUPABASE_URL']!,
+  anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+);
+```
+
+Dengan cara ini, aplikasi tetap dapat terhubung dengan database Supabase tanpa harus menuliskan informasi sensitif secara langsung di dalam kode sumber.
+
+File `.env` juga dapat ditambahkan ke dalam `.gitignore` sehingga tidak ikut terunggah ke repository GitHub.
+
