@@ -63,25 +63,191 @@ Berikut beberapa widget Flutter yang digunakan dalam pengembangan aplikasi ini:
 
 ---
 
-## Struktur Halaman Aplikasi
+---
+## Struktur Folder
 
-Aplikasi terdiri dari beberapa halaman utama:
 
-* **Home Screen**
-  Menampilkan daftar seluruh catatan yang tersimpan.
-
-* **Add Note Screen**
-  Digunakan untuk menambahkan catatan baru.
-
-* **Edit Note Screen**
-  Digunakan untuk memperbarui catatan yang sudah ada.
 
 ---
 
-## Repository
+## Fitur Aplikasi
 
-Source code aplikasi dapat diakses melalui repository GitHub berikut:
+Aplikasi **Problem & Solution Note** memiliki beberapa fitur utama yang memungkinkan pengguna untuk mengelola catatan masalah dan solusi secara dinamis menggunakan database Supabase.
 
+### 1. Menampilkan Data Catatan (Read)
+
+Fitur ini berfungsi untuk menampilkan seluruh catatan yang tersimpan di database Supabase ke dalam tampilan aplikasi.
+
+Pada saat aplikasi dijalankan, fungsi `loadNotes()` akan dipanggil untuk mengambil data dari Supabase melalui service layer. Data yang diterima kemudian disimpan ke dalam state dan ditampilkan menggunakan `ListView`.
+
+Contoh implementasi pada `HomeScreen`:
+
+```dart
+Future<void> loadNotes() async {
+
+  final data = await supabaseService.getNotes();
+
+  setState(() {
+    notes = data;
+  });
+
+}
 ```
-https://github.com/JM-glich/Aplikasi_Problem-Solution_Note
+
+Data tersebut diambil dari Supabase menggunakan fungsi berikut pada `supabase_service.dart`:
+
+```dart
+Future<List<Note>> getNotes() async {
+  final data = await supabase.from('notes').select();
+
+  return (data as List)
+      .map((note) => Note.fromJson(note))
+      .toList();
+}
 ```
+
+Fungsi ini mengambil seluruh data dari tabel `notes` kemudian mengubahnya menjadi objek `Note`.
+
+---
+
+### 2. Menambahkan Catatan Baru (Create)
+
+Fitur ini memungkinkan pengguna untuk menambahkan catatan baru yang berisi beberapa field, yaitu:
+
+* Judul catatan
+* Deskripsi masalah
+* Solusi
+* Kategori
+
+Pengguna mengisi form pada halaman **Add Note Screen**, kemudian data akan dikirim ke database Supabase melalui fungsi `addNote()`.
+
+Contoh pemanggilan fungsi pada `AddNoteScreen`:
+
+```dart
+Future<void> saveNote() async {
+
+  if (_formKey.currentState!.validate()) {
+
+    await supabaseService.addNote(
+      titleController.text,
+      problemController.text,
+      solutionController.text,
+      categoryController.text,
+    );
+
+    Navigator.pop(context, true);
+  }
+
+}
+```
+
+Data kemudian disimpan ke database melalui service berikut:
+
+```dart
+Future<void> addNote(
+  String title,
+  String problem,
+  String solution,
+  String category,
+) async {
+
+  await supabase.from('notes').insert({
+    'title': title,
+    'problem': problem,
+    'solution': solution,
+    'category': category,
+  });
+
+}
+```
+
+Setelah proses penyimpanan selesai, aplikasi kembali ke halaman utama dan daftar catatan diperbarui.
+
+---
+
+### 3. Mengubah Data Catatan (Update)
+
+Fitur ini memungkinkan pengguna untuk mengedit catatan yang sudah ada. Pengguna dapat membuka halaman **Edit Note Screen** dengan menekan salah satu item catatan pada daftar.
+
+Data lama dari catatan tersebut akan dimasukkan ke dalam form melalui controller.
+
+```dart
+@override
+void initState() {
+  super.initState();
+
+  titleController.text = widget.note.title;
+  problemController.text = widget.note.problemDescription;
+  solutionController.text = widget.note.solution;
+  categoryController.text = widget.note.category;
+}
+```
+
+Setelah pengguna memperbarui data, fungsi `updateNote()` akan dipanggil untuk memperbarui data di database.
+
+```dart
+Future<void> updateNote() async {
+
+  if (_formKey.currentState!.validate()) {
+
+    final updatedNote = Note(
+      id: widget.note.id,
+      title: titleController.text,
+      problemDescription: problemController.text,
+      solution: solutionController.text,
+      category: categoryController.text,
+    );
+
+    await supabaseService.updateNote(updatedNote);
+
+    Navigator.pop(context, true);
+  }
+
+}
+```
+
+Proses update pada database dilakukan oleh service berikut:
+
+```dart
+Future<void> updateNote(Note note) async {
+  await supabase
+      .from('notes')
+      .update(note.toJson())
+      .eq('id', note.id);
+}
+```
+
+Fungsi ini memperbarui data berdasarkan `id` catatan yang dipilih.
+
+---
+
+### 4. Menghapus Catatan (Delete)
+
+Fitur ini memungkinkan pengguna untuk menghapus catatan yang sudah tidak diperlukan lagi. Tombol hapus tersedia pada setiap item catatan di halaman utama.
+
+Saat tombol ditekan, fungsi `deleteNote()` akan dipanggil untuk menghapus data dari database Supabase.
+
+Contoh implementasi pada `HomeScreen`:
+
+```dart
+Future<void> deleteNote(String id) async {
+
+  await supabaseService.deleteNote(id);
+
+  loadNotes();
+
+}
+```
+
+Proses penghapusan data dilakukan melalui service berikut:
+
+```dart
+Future<void> deleteNote(String id) async {
+  await supabase
+      .from('notes')
+      .delete()
+      .eq('id', id);
+}
+```
+
+Setelah data berhasil dihapus, aplikasi akan memuat ulang daftar catatan sehingga perubahan langsung terlihat pada tampilan aplikasi.
