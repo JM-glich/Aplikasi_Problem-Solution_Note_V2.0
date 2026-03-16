@@ -39,15 +39,6 @@ Berikut beberapa widget Flutter yang digunakan dalam pengembangan aplikasi ini:
 
 ---
 
----
-## Struktur Folder
-
-```dart
-l
-```
-
----
-
 ## Fitur Aplikasi
 
 Aplikasi ini memiliki beberapa fitur utama, yaitu:
