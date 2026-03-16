@@ -349,3 +349,9 @@ Dengan cara ini, aplikasi tetap dapat terhubung dengan database Supabase tanpa h
 
 File `.env` juga dapat ditambahkan ke dalam `.gitignore` sehingga tidak ikut terunggah ke repository GitHub.
 
+---
+
+/screenshoot aplikasi
+
+
+
